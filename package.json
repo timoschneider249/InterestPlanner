@@ -33,7 +33,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "^5.3.3",
     "electron-squirrel-startup": "^1.0.1",
-    "vue": "^3.4.34"
+    "vue": "^3.4.34",
+    "vue-router": "^4.4.0"
   }
 }
