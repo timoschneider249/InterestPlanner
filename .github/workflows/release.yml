@@ -43,8 +43,8 @@ jobs:
       - name: Install Mono and Wine
         run: |
           sudo dpkg --add-architecture i386
-           sudo apt-get -y update
-           sudo apt-get -y install wine32 wine64 mono-devel
+          sudo apt-get -y update
+          sudo apt-get -y install wine32 wine64 mono-devel
 
       - name: Build for Windows
         run: npm run make -- --platform=win32
@@ -68,7 +68,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ env.VERSION }}
-          release_name: Release ${{ env.VERSION }}
+          name: InterestPlanner ${{ env.VERSION }}
           draft: false
           prerelease: false
         env:
