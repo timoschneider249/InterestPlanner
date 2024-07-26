@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [linux, win32]  # Valid platform values for Electron Forge
 
     steps:
       - name: Checkout code
@@ -30,34 +30,29 @@ jobs:
       - name: Build the app
         run: npm run make -- --platform=${{ matrix.os }}
 
-      - name: Create release
-        if: success() && github.event_name == 'push'
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: v${{ steps.get_version.outputs.version }}
-          release_name: Release ${{ steps.get_version.outputs.version }}
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-      - name: Upload release assets
-        if: success() && github.event_name == 'push'
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            .vite/renderer/**/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
-  get_version:
-    runs-on: ubuntu-latest
-    steps:
       - name: Get version from package.json
         id: get_version
         run: |
           VERSION=$(node -p "require('./package.json').version")
           echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      - name: Create release
+        if: success()
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          draft: false
+          prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload release assets
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            .vite/renderer/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
