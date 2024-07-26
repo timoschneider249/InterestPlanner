@@ -1,8 +1,17 @@
 <template>
- <h1>💖 Hello World!</h1>
- <p>Welcome to your Electron application.</p>
+ <div id="app">
+  <nav>
+   <router-link to="/">ROI Calculator</router-link>
+   <router-link to="/tokens">Token Calculator</router-link>
+  </nav>
+  <router-view />
+ </div>
 </template>
 
 <script setup>
-console.log('👋 This message is being logged by "App.vue", included via Vite');
+// Vue script setup for App component
 </script>
+
+<style scoped>
+/* Scoped styles for navigation */
+</style>
