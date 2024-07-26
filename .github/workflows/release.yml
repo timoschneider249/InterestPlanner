@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [linux, win32]  # Valid platform values for Electron Forge
+        os: [linux, win32]
 
     steps:
       - name: Checkout code
@@ -28,7 +28,12 @@ jobs:
         run: npm install
 
       - name: Build the app
-        run: npm run make -- --platform=${{ matrix.os }}
+        run: |
+          if [ ${{ matrix.os }} == 'win32' ]; then
+            npm run make -- --platform=win32
+          else
+            npm run make -- --platform=linux
+          fi
 
       - name: Get version from package.json
         id: get_version
