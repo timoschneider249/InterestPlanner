@@ -4,17 +4,20 @@
     margin: 2rem auto;
     padding: 0 1rem;
 }
-
-/* Card Styles */
-.card {
-    border-radius: 15px;
-    overflow: hidden;
+.about-container {
+    background-color: #f8f9fa;
+    padding: 2rem;
 }
-
-.card-header {
-    padding: 1.5rem;
+.app-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
 }
-
 /* Input Group Styles */
 .input-group-custom {
     background: #f8f9fa;
@@ -22,20 +25,6 @@
     border-radius: 10px;
 }
 
-.form-label {
-    margin-bottom: 0.75rem;
-}
-
-.form-control {
-    border: 2px solid #e9ecef;
-    border-radius: 8px;
-    transition: all 0.3s;
-}
-
-.form-control:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-}
 
 /* Results Section Styles */
 .results-section {
@@ -80,4 +69,13 @@
 
 .detail-item {
     text-align: center;
+}
+.info-section {
+    padding: 0 1rem;
+}
+
+.detail-item {
+    padding: 1rem;
+    border-radius: 8px;
+    background-color: #f8f9fa;
 }
