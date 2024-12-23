@@ -60,7 +60,7 @@ jobs:
         run: npm run make -- --platform=win32
 
       - name: List output directory
-        run: dir /s out
+        run: dir out/
 
       - name: Upload Windows Build Artifacts
         id: upload-artifacts
