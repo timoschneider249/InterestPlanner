@@ -41,7 +41,7 @@ jobs:
             out/make/**/*.rpm
 
   build-windows:
-    runs-on: windows-latest  # Changed to windows-latest for better Windows builds
+    runs-on: windows-latest
     outputs:
       windows-artifacts: ${{ steps.upload-artifacts.outputs.artifacts }}
     steps:
