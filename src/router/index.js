@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ROIPage from '../components/ROIPage.vue';
-import TokenPage from '../components/TokenPage.vue';
+import ROIPage from '../components/ROICalculator.vue';
+import TokenPage from '../components/TokenCalculator.vue';
 import AboutPage from '../components/About.vue';
 
 const routes = [

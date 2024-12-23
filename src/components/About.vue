@@ -16,7 +16,7 @@
      <div class="mb-3">
       <h5 class="text-primary">Description</h5>
       <p class="text-muted">
-       InterestPlanner is a powerful tool designed to simplify your financial calculations.
+       InterestPlanner is a tool designed to simplify your financial calculations.
        Calculate ROI and analyze token-related data with our user-friendly interface.
       </p>
      </div>
@@ -70,55 +70,4 @@ const close = () => {
 </script>
 
 <style scoped>
-.about-container {
- background-color: #f8f9fa;
- padding: 2rem;
-}
-
-.card {
- max-width: 600px;
- width: 100%;
- border-radius: 15px;
- overflow: hidden;
-}
-
-.card-header {
- padding: 1.5rem;
-}
-
-.app-icon {
- width: 80px;
- height: 80px;
- border-radius: 50%;
- background-color: #f8f9fa;
- display: flex;
- align-items: center;
- justify-content: center;
- margin: 0 auto;
-}
-
-.info-section {
- padding: 0 1rem;
-}
-
-.detail-item {
- padding: 1rem;
- border-radius: 8px;
- background-color: #f8f9fa;
-}
-
-.list-unstyled li {
- margin-bottom: 0.5rem;
- padding: 0.5rem;
- border-radius: 5px;
- transition: background-color 0.2s;
-}
-
-.list-unstyled li:hover {
- background-color: #f8f9fa;
-}
-
-.btn {
- min-width: 120px;
-}
 </style>
