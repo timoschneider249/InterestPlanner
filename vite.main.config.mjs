@@ -7,10 +7,11 @@ import {
 } from "./vite.base.config.mjs";
 import eslintPlugin from "vite-plugin-eslint";
 
+// https://vitejs.dev/config
 export default defineConfig((env) => {
+  /** @type {import('vite').ConfigEnv<'build'>} */
   const forgeEnv = env;
   const { forgeConfigSelf } = forgeEnv;
-
   const define = getBuildDefine(forgeEnv);
   const config = {
     build: {
@@ -24,10 +25,6 @@ export default defineConfig((env) => {
       },
     },
     plugins: [
-      eslintPlugin({
-        fix: true, // Auto-fix linting issues
-        include: ["src/**/*.js", "src/**/*.vue", "src/**/*.mjs"],
-      }),
       pluginHotRestart("restart"),
     ],
     define,

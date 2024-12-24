@@ -58,22 +58,38 @@ To learn more about the CoinGecko API, visit the [official documentation](https:
 
 ```plaintext
 .
-├── src
-│   ├── main  # Main process files for Electron
-│   │   ├── ipc.service.js  # Handles IPC communication
-│   │   ├── api.service.js  # Integrates with the CoinGecko API
-│   │   └── main.js  # Entry point for Electron
-│   ├── renderer  # Frontend Vue.js application
-│   │   ├── components  # Vue components
-│   │   ├── App.vue  # Root component
-│   │   └── main.js  # Entry point for Vue.js
-│   └── preload.js  # Preloads for Electron
-├── vite.main.config.mjs  # Vite configuration for the main process
-├── vite.renderer.config.mjs  # Vite configuration for the renderer process
-├── eslint.config.mjs  # ESLint configuration
-├── .prettierrc  # Prettier configuration
-├── package.json  # Project metadata and dependencies
-└── README.md  # Project documentation
+├── node_modules/
+├── out/
+├── src/
+│   ├── assets/
+│   │   └── styles/
+│   │       └── main.css
+│   ├── components/
+│   │   ├── About.vue
+│   │   ├── ROICalculator.vue
+│   │   └── TokenCalculator.vue
+│   ├── router/
+│   │   └── index.js
+│   └── services/
+│       ├── api.service.js
+│       └── ipc.service.js
+├── App.vue
+├── index.css
+├── main.js
+├── preload.js
+├── renderer.js
+├── .gitignore
+├── .prettierignore
+├── .prettierrc
+├── eslint.config.mjs
+├── forge.config.js
+├── forge.env.d.ts
+├── index.html
+├── LICENSE
+├── package.json
+├── package-lock.json
+├── README.md
+└── vite.base.config.mjs
 ```
 
 ## Scripts

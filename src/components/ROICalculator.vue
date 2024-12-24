@@ -170,9 +170,9 @@ export default {
   },
   computed: {
     tokensPerDay() {
-      return this.days > 0 && this.tokensGained > 0
-        ? this.tokensGained / this.days
-        : 0;
+      return this.days > 0 && this.tokensGained > 0 ?
+        this.tokensGained / this.days :
+        0;
     },
     annualizedTokens() {
       if (this.days > 0) {
@@ -183,9 +183,9 @@ export default {
       return 0;
     },
     moneyPerDay() {
-      return this.days > 0 && this.tokensGained > 0
-        ? (this.tokensGained / this.days) * this.price
-        : 0;
+      return this.days > 0 && this.tokensGained > 0 ?
+        (this.tokensGained / this.days) * this.price :
+        0;
     },
     annualizedMoney() {
       if (this.days > 0) {
