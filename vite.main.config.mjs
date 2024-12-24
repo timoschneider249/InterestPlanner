@@ -1,33 +1,39 @@
-import { defineConfig, mergeConfig } from 'vite';
+import { defineConfig, mergeConfig } from "vite";
 import {
   getBuildConfig,
   getBuildDefine,
   external,
   pluginHotRestart,
-} from './vite.base.config.mjs';
+} from "./vite.base.config.mjs";
+import eslintPlugin from "vite-plugin-eslint";
 
-// https://vitejs.dev/config
 export default defineConfig((env) => {
-  /** @type {import('vite').ConfigEnv<'build'>} */
   const forgeEnv = env;
   const { forgeConfigSelf } = forgeEnv;
+
   const define = getBuildDefine(forgeEnv);
   const config = {
     build: {
       lib: {
         entry: forgeConfigSelf.entry,
-        fileName: () => '[name].js',
-        formats: ['cjs'],
+        fileName: () => "[name].js",
+        formats: ["cjs"],
       },
       rollupOptions: {
         external,
       },
     },
-    plugins: [pluginHotRestart('restart')],
+    plugins: [
+      eslintPlugin({
+        fix: true, // Auto-fix linting issues
+        include: ["src/**/*.js", "src/**/*.vue", "src/**/*.mjs"],
+      }),
+      pluginHotRestart("restart"),
+    ],
     define,
     resolve: {
       // Load the Node.js entry.
-      mainFields: ['module', 'jsnext:main', 'jsnext'],
+      mainFields: ["module", "jsnext:main", "jsnext"],
     },
   };
 
