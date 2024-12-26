@@ -44,8 +44,7 @@
           <div class="col-md-6 mb-4">
             <div class="input-group-custom">
               <label for="days" class="form-label text-primary fw-bold">
-                <i class="bi bi-calendar me-2"></i>Days in which Coins where
-                gained
+                <i class="bi bi-calendar me-2"></i>Days when Coins were gained
               </label>
               <input
                 id="days"
@@ -57,44 +56,11 @@
               />
             </div>
           </div>
-          <div class="col-md-6 mb-4">
-            <div class="input-group-custom">
-              <label for="price" class="form-label text-primary fw-bold">
-                <i class="bi bi-calendar me-2"></i>Current Price of Coin
-              </label>
-              <input
-                id="price"
-                v-model="formattedPrice"
-                @blur="updatePrice"
-                @input="clearResults"
-                type="text"
-                class="form-control form-control-lg"
-                placeholder="Enter price of coin"
-              />
-            </div>
-          </div>
-          <div class="row">
-            <!-- Dropdown to select coin -->
-            <div class="col-md-6 mb-4">
-              <div class="input-group-custom">
-                <label for="coinSelect" class="form-label text-primary fw-bold">
-                  <i class="bi bi-currency-bitcoin me-2"></i>Select Coin
-                </label>
-                <select
-                  id="coinSelect"
-                  v-model="selectedCoin"
-                  @change="fetchPrice"
-                  class="form-control form-control-lg"
-                >
-                  <option value="cardano">Cardano (ADA)</option>
-                  <option value="bitcoin">Bitcoin (BTC)</option>
-                  <option value="ethereum">Ethereum (ETH)</option>
-                  <!-- Add more options as needed -->
-                </select>
-              </div>
-            </div>
-          </div>
         </div>
+        <coin-picker
+          @update-price="handlePriceUpdate"
+          @coin-changed="handleCoinChange"
+        />
         <div class="text-center mt-4">
           <button @click="calculateROI" class="btn btn-primary btn-lg px-5">
             <i class="bi bi-calculator me-2"></i>Calculate ROI
@@ -148,10 +114,11 @@
 </template>
 
 <script>
-import service from "./../services/api.service";
+import CoinPicker from "./templates/CoinPicker.vue";
 
 export default {
   name: "ROIPage",
+  components: { CoinPicker },
   data() {
     return {
       totalTokens: 0,
@@ -161,44 +128,31 @@ export default {
       roi: null,
       formattedTotalTokens: "0",
       formattedTokensGained: "0",
-      formattedPrice: "0",
       selectedCoin: "cardano",
     };
   },
-  mounted() {
-    this.fetchPrice();
-  },
   computed: {
     tokensPerDay() {
-      return this.days > 0 && this.tokensGained > 0 ?
-        this.tokensGained / this.days :
-        0;
+      return this.days > 0 && this.tokensGained > 0
+        ? this.tokensGained / this.days
+        : 0;
     },
     annualizedTokens() {
       if (this.days > 0) {
         const daysInYear = 365;
-        const tokensPerDay = this.tokensGained / this.days;
-        return tokensPerDay * daysInYear;
+        return this.tokensPerDay * daysInYear;
       }
       return 0;
     },
     moneyPerDay() {
-      return this.days > 0 && this.tokensGained > 0 ?
-        (this.tokensGained / this.days) * this.price :
-        0;
+      return this.tokensPerDay * this.price;
     },
     annualizedMoney() {
-      if (this.days > 0) {
-        const daysInYear = 365;
-        const tokensPerDay = this.tokensGained / this.days;
-        return tokensPerDay * daysInYear * this.price;
-      }
-      return 0;
+      return this.annualizedTokens * this.price;
     },
   },
   methods: {
     calculateROI() {
-      this.roi = null;
       if (this.totalTokens <= 0 || this.tokensGained <= 0 || this.days <= 0) {
         this.roi = null;
         return;
@@ -210,93 +164,77 @@ export default {
       const gainPerPeriod = this.tokensGained / (this.days / compoundingPeriod);
       const principal = this.totalTokens;
       const effectiveRate = gainPerPeriod / principal;
-      const totalAmount =
-        principal * Math.pow(1 + effectiveRate, periodsInYear);
+      const totalAmount = principal * Math.pow(1 + effectiveRate, periodsInYear);
       const annualROI = ((totalAmount - principal) / principal) * 100;
       this.roi = this.fixedDecimal(annualROI, 5);
     },
     fixedDecimal(x, y) {
       return Number.parseFloat(x).toFixed(y);
     },
-
-    // Update totalTokens after losing focus and formatting
     updateTotalTokens() {
-      this.totalTokens = this.parseNumber(this.formattedTotalTokens);
+      const parsedValue = this.parseNumber(this.formattedTotalTokens);
+      if (parsedValue !== null) {
+        this.totalTokens = parsedValue;
+        this.formattedTotalTokens = parsedValue.toLocaleString();
+      }
+      this.calculateROI();
     },
-    // Update tokensGained after losing focus and formatting
     updateTokensGained() {
-      this.tokensGained = this.parseNumber(this.formattedTokensGained);
+      const parsedValue = this.parseNumber(this.formattedTokensGained);
+      if (parsedValue !== null) {
+        this.tokensGained = parsedValue;
+        this.formattedTokensGained = parsedValue.toLocaleString();
+      }
+      this.calculateROI();
     },
-    // Update price after losing focus and formatting
-    updatePrice() {
-      this.price = this.parseNumber(this.formattedPrice);
+    handlePriceUpdate(price) {
+      this.price = price;
+      this.calculateROI();
     },
-    // Helper method to parse the formatted number (with commas) back to a number
+    handleCoinChange(newCoin) {
+      this.selectedCoin = newCoin;
+    },
+    clearResults() {
+      this.roi = null;
+    },
     parseNumber(input) {
-      const cleaned = input.trim();
+      if (!input) return null;
 
-      // If the input contains commas, replace commas with periods
+      const cleaned = input.toString().trim();
+
+      // Handle different number formats
+      // 1. Numbers with comma as decimal separator (e.g., 1,23)
       if (cleaned.includes(",") && !cleaned.includes(".")) {
         return parseFloat(cleaned.replace(",", "."));
       }
 
-      // If the input is already a valid number, just return it
-      if (/^\d+(\.\d+)?$/.test(cleaned)) {
-        return parseFloat(cleaned);
-      }
-
-      // Handle more complex formatting, such as thousand separators
+      // 2. Numbers with thousand separators and comma decimal (e.g., 1.234,56)
       if (/^\d+(?:\.\d{3})*,\d+$/.test(cleaned)) {
         return parseFloat(cleaned.replace(/\./g, "").replace(",", "."));
       }
 
-      // Handle other formats like 1,000.00 (US style)
+      // 3. Numbers with thousand separators and dot decimal (e.g., 1,234.56)
       if (/^\d+(?:,\d{3})*\.\d+$/.test(cleaned)) {
         return parseFloat(cleaned.replace(/,/g, ""));
       }
 
-      return null;
-    },
-
-    // Clear results whenever any input changes
-    clearResults() {
-      this.roi = null;
-      this.tokensPerDay = 0;
-      this.annualizedTokens = 0;
-      this.moneyPerDay = 0;
-      this.annualizedMoney = 0;
-    },
-    async fetchPrice() {
-      const coinIds = {
-        cardano: "cardano",
-        bitcoin: "bitcoin",
-        ethereum: "ethereum",
-      };
-      const coin = coinIds[this.selectedCoin];
-
-      try {
-        const data = await service.getCoinPrice(coin);
-        this.price = data[coin]?.usd || 0;
-        console.log(data);
-        this.formattedPrice = this.price.toString();
-      } catch (error) {
-        console.error("Error fetching coin price:", error);
+      // 4. Plain numbers (e.g., 1234.56)
+      if (/^\d*\.?\d*$/.test(cleaned)) {
+        return parseFloat(cleaned);
       }
+
+      // 5. Remove all non-numeric characters except decimal point
+      const numericValue = cleaned.replace(/[^\d.]/g, "");
+      return parseFloat(numericValue) || null;
     },
   },
   watch: {
-    totalTokens(newVal) {
-      this.formattedTotalTokens = newVal;
-    },
-    tokensGained(newVal) {
-      this.formattedTokensGained = newVal;
-    },
-    formattedPrice(newVal) {
-      console.log(newVal);
-      this.formattedPrice = newVal;
-    },
-    selectedCoin(newVal) {
-      this.fetchPrice();
+    days(newVal) {
+      if (newVal > 0) {
+        this.calculateROI();
+      } else {
+        this.clearResults();
+      }
     },
   },
 };

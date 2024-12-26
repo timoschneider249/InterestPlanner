@@ -1,6 +1,5 @@
 const { app, BrowserWindow, Menu } = require("electron");
 const path = require("node:path");
-import ipcService from "./services/ipc.service";
 let mainWindow;
 
 const createWindow = () => {
@@ -85,7 +84,6 @@ const createMenu = () => {
 
 app.whenReady().then(() => {
   // Register all IPC handlers
-  ipcService.registerHandlers();
   createWindow();
 
   app.on("activate", () => {
